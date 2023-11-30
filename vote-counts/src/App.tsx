@@ -1,27 +1,24 @@
 import { useState } from "react";
 import "./App.css";
-import BasicMap from "./components/BasicMap";
 import BetterMap from "./components/BetterMap";
+// import { Tooltip } from "react-tooltip";
+import Tooltip from "./components/Tooltip";
 
 function App() {
-  const [content, setContent] = useState(<></>);
-  var tooltipSpan = document.getElementById("tooltip-span");
+  const [tooltipPosition, setTooltipPosition] = useState([0, 0]);
 
-  // window.onmousemove = function (e) {
-  //   var x = e.clientX,
-  //     y = e.clientY;
-  //   tooltipSpan.style.top = y + 20 + "px";
-  //   tooltipSpan.style.left = x + 20 + "px";
-  // };
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { clientX, clientY } = e;
+    setTooltipPosition([clientX, clientY]);
+  };
+  const [content, setContent] = useState(<>hi</>);
   return (
-    <>
-      <div className="tooltip">
-        {content}
-      </div>
+    <div onMouseMove={handleMouseMove}>
+      <Tooltip position={tooltipPosition}>{content}</Tooltip>
       <div className="large">
         <BetterMap setTooltip={setContent}></BetterMap>
       </div>
-    </>
+    </div>
   );
 }
 
