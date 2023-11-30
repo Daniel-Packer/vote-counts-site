@@ -9,6 +9,9 @@ const csvUrl =
 
 interface MapChartProps {
   setTooltip: React.Dispatch<React.SetStateAction<JSX.Element>>;
+  onMouseMove: (e: React.MouseEvent) => void;
+  onMouseLeave: (e: React.MouseEvent) => void;
+  onMouseEnter: (e: React.MouseEvent) => void;
 }
 
 interface countyData {
@@ -17,11 +20,10 @@ interface countyData {
   log_pivot_odds: number;
 }
 
-const MapChart = ({ setTooltip }: MapChartProps) => {
+const MapChart = ({ setTooltip, onMouseMove, onMouseEnter, onMouseLeave }: MapChartProps) => {
   const [data, setData] = useState(Array<countyData>);
 
   useEffect(() => {
-    // https://www.bls.gov/lau/
     dsv(",", csvUrl, (d) => {
       return {
         county_fips: d.county_fips,
@@ -43,11 +45,14 @@ const MapChart = ({ setTooltip }: MapChartProps) => {
             const cur = data.find((s) => s.county_fips === geo.id);
             return (
               <Geography
-                className="tooltip"
+                className="county"
                 key={geo.rsmKey}
                 geography={geo}
                 fill={cur ? colorScale(cur.log_pivot_odds) : "#EEE"}
-                onMouseEnter={() => {
+                
+                onMouseMove={onMouseMove}
+                onMouseEnter={(e) => {
+                  onMouseEnter(e);
                   const prob = cur
                     ? (100 * cur.pivot_odds).toFixed(6) + "%"
                     : "no election recorded";
@@ -58,6 +63,7 @@ const MapChart = ({ setTooltip }: MapChartProps) => {
                   );
                   setTooltip(tooltipString);
                 }}
+                onMouseLeave={onMouseLeave}
               ></Geography>
             );
           })
