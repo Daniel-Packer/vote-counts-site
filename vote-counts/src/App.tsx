@@ -8,9 +8,9 @@ function App() {
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const handleMapMouseClick = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
+    const { pageX, pageY } = e;
     setTooltipVisible(true);
-    setTooltipPosition([clientX, clientY]);
+    setTooltipPosition([pageX, pageY]);
   }
   
   const handleOtherClick = () => {
