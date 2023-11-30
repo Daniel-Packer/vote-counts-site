@@ -9,9 +9,7 @@ const csvUrl =
 
 interface MapChartProps {
   setTooltip: React.Dispatch<React.SetStateAction<JSX.Element>>;
-  onMouseMove: (e: React.MouseEvent) => void;
-  onMouseLeave: (e: React.MouseEvent) => void;
-  onMouseEnter: (e: React.MouseEvent) => void;
+  onMouseClick: (e: React.MouseEvent) => void;
 }
 
 interface countyData {
@@ -20,7 +18,7 @@ interface countyData {
   log_pivot_odds: number;
 }
 
-const MapChart = ({ setTooltip, onMouseMove, onMouseEnter, onMouseLeave }: MapChartProps) => {
+const MapChart = ({ setTooltip, onMouseClick }: MapChartProps) => {
   const [data, setData] = useState(Array<countyData>);
 
   useEffect(() => {
@@ -49,10 +47,8 @@ const MapChart = ({ setTooltip, onMouseMove, onMouseEnter, onMouseLeave }: MapCh
                 key={geo.rsmKey}
                 geography={geo}
                 fill={cur ? colorScale(cur.log_pivot_odds) : "#EEE"}
-                
-                onMouseMove={onMouseMove}
-                onMouseEnter={(e) => {
-                  onMouseEnter(e);
+                onMouseDown={(e) => {
+                  onMouseClick(e);
                   const prob = cur
                     ? (100 * cur.pivot_odds).toFixed(6) + "%"
                     : "no election recorded";
@@ -62,8 +58,8 @@ const MapChart = ({ setTooltip, onMouseMove, onMouseEnter, onMouseLeave }: MapCh
                     </>
                   );
                   setTooltip(tooltipString);
+                  e.stopPropagation();
                 }}
-                onMouseLeave={onMouseLeave}
               ></Geography>
             );
           })
