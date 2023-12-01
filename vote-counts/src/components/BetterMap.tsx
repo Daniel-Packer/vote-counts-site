@@ -3,9 +3,13 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { scaleLinear } from "d3-scale";
 import { dsv } from "d3-fetch";
 
+{/* <script src="http://code.jquery.com/jquery-latest.min.js"></script> */}
+
 const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json";
 const csvUrl =
   "https://raw.githubusercontent.com/Daniel-Packer/vote-counts/main/data/county_pivot_odds_c2.csv";
+const gold = "#dec057"
+const light_gold = "#b0a037"
 
 interface MapChartProps {
   setTooltip: React.Dispatch<React.SetStateAction<JSX.Element>>;
@@ -41,12 +45,24 @@ const MapChart = ({ setTooltip, onMouseClick }: MapChartProps) => {
         {({ geographies }) =>
           geographies.map((geo) => {
             const cur = data.find((s) => s.county_fips === geo.id);
+            const color = cur ? colorScale(cur.log_pivot_odds) : "#EEEEEE";
             return (
               <Geography
                 className="county"
                 key={geo.rsmKey}
                 geography={geo}
-                fill={cur ? colorScale(cur.log_pivot_odds) : "#EEE"}
+                style={{
+                  default: {
+                    fill: color,
+                  },
+                  hover: {
+                    fill: gold,
+                  },
+                  pressed: {
+                    fill: light_gold,
+                  }
+
+                }}
                 onMouseDown={(e) => {
                   onMouseClick(e);
                   const prob = cur
